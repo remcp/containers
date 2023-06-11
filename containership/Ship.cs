@@ -14,5 +14,12 @@ namespace containership
         public int MaxWeight { get; set; }
         public int LeftWeight { get; set; }
         public int RightWeight { get; set; }
+
+        public Ship(int lenght, int width, int maxweight)
+        {
+            Lenght = lenght;
+            Width = width;
+            MaxWeight = maxweight;
+        }
     }
 }
