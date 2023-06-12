@@ -15,7 +15,7 @@ namespace containership
 
         public Container(int weight, bool valuable, bool coolable)
         {
-            if (checkweight(weight) == true)
+            if (checkweight(weight) == false)
             {
                 throw new ArgumentException("container needs to be at least 4000kg and max 30000kg");
             }

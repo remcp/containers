@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -14,23 +15,24 @@ namespace containership
 
         public string Name { get; set; }
         public int Length { get; set; }
-        public int Width { get; set; }
+        public float Width { get; set; }
         public int MaxWeight { get; set; }
         public int LeftWeight { get; set; }
         public int RightWeight { get; set; }
+        public int MiddleWeight { get; set; }
 
         public Ship(int lenght, int width)
         {
             Length = lenght;
             Width = width;
-            MaxWeight = (lenght * width) * 150;
-            
+            MaxWeight = (lenght * width) * 150000;
+            setcontainerfields();
         }
 
         public void setcontainerfields()
         {
-            int amount = Length * Width;
-            for(int i = 0; i < amount; i++)
+            int amount = Length * Convert.ToInt32(Width);
+            for (int i = 0; i < amount; i++)
             {
                 Containerfields.Add(new List<Container>());
             }
@@ -40,17 +42,17 @@ namespace containership
         {
             int containerfield = 0;
             string fill = "";
-            if(Length * Width > 9)
+            if (Length * Width > 9)
             {
                 fill = " ";
             }
-            for(int i = 0; i < Length; i++)
+            for (int i = 0; i < Length; i++)
             {
                 for (int j = 0; j < Width; j++)
                 {
-                    Console.Write("|"+containerfield+fill+"|");
+                    Console.Write("|" + containerfield + fill + "|");
                     containerfield++;
-                    if(containerfield > 9)
+                    if (containerfield > 9)
                     {
                         fill = "";
                     }
@@ -58,38 +60,62 @@ namespace containership
                 Console.WriteLine();
             }
         }
-
+        public void printlists()
+        {
+            for (int i = 0; i < Containerfields.Count; i++)
+            {
+                Console.WriteLine("field " + i);
+                Console.WriteLine();
+                foreach (Container container in Containerfields[i])
+                {
+                    string iscoolable = "no";
+                    string isvaluable = "no";
+                    if (container.Coolable == true)
+                    {
+                        iscoolable = "yes";
+                    }
+                    if (container.Valuable == true)
+                    {
+                        isvaluable = "yes";
+                    }
+                    Console.WriteLine(container.Weight + " " + " coolable = " + iscoolable + " valuable = " + isvaluable);
+                }
+            }
+        }
 
 
         public bool addcontainer(Container container)
         {
             bool added = false;
-            for(int i = 0; i < Containerfields.Count; i++) 
+            float middle = Width/ 2;
+            for (int i = 0; i < Containerfields.Count; i++)
             {
                 //check if container does not exceed ship maximum weight
-                if (MaxWeight + container.Weight < MaxWeight)
+                if (LeftWeight + RightWeight + MiddleWeight + container.Weight < MaxWeight)
                 {
                     //check if the left side of the ship is not more than 20% heavier than the right side of the ship
                     if (exceedleft(container.Weight) == false)
                     {
                         //container can only be placed on the left side of the ship or in the middle row
-                        if(i % Width <= Width / 2)
+                        if (i % Convert.ToInt32(Width) < middle)
                         {
-                            //check if valuable container is still reachable
-                            if (checknexttovaluable(container,i) == false)
+                            added = placecontainer(container, i);
+                            if (added == true) 
                             {
-                                if (coolablecheck(container, i) == true)
+                                LeftWeight = LeftWeight + container.Weight;
+                                break; 
+                            }
+                            
+                        }
+                        else
+                        {
+                            if (i % Width == Width / 2)
+                            {
+                                added = placecontainer(container, i);
+                                if (added == true)
                                 {
-                                    //check if containerfield can have all the containers while not exceeding more than 130 ton on top of the first one
-                                    List<Container> dummycontainerlist = Containerfields[i];
-                                    dummycontainerlist.Add(container);
-                                    dummycontainerlist = weightsort(dummycontainerlist);
-                                    if (canaddweightontop(dummycontainerlist) == true)
-                                    {
-                                        Containerfields[i] = dummycontainerlist;
-                                        added = true;
-                                        break;
-                                    }
+                                    MiddleWeight = MiddleWeight + container.Weight;
+                                    break;
                                 }
                             }
                         }
@@ -98,22 +124,24 @@ namespace containership
                     else if (exceedright(container.Weight) == false)
                     {
                         //container can only be placed on the right side of the ship or in the middle row
-                        if (i % Width >= Width / 2)
+                        if (i % Width > Width / 2)
                         {
-                            if (checknexttovaluable(container,i) == false)
+                            added = placecontainer(container, i);
+                            if (added == true) 
+                            { 
+                                RightWeight = RightWeight + container.Weight;
+                                break; 
+                            }
+                        }
+                        else
+                        {
+                            if (i % Width == Width / 2)
                             {
-                                if (coolablecheck(container, i) == true)
+                                added = placecontainer(container, i);
+                                if (added == true)
                                 {
-                                    //check if containerfield can have all the containers while not exceeding more than 130 ton on top of the first one
-                                    List<Container> dummycontainerlist = Containerfields[i];
-                                    dummycontainerlist.Add(container);
-                                    dummycontainerlist = weightsort(dummycontainerlist);
-                                    if (canaddweightontop(dummycontainerlist) == true)
-                                    {
-                                        Containerfields[i] = dummycontainerlist;
-                                        added = true;
-                                        break;
-                                    }
+                                    MiddleWeight = MiddleWeight + container.Weight;
+                                    break;
                                 }
                             }
                         }
@@ -124,40 +152,93 @@ namespace containership
             return added;
         }
 
+        public bool checkodd()
+        {
+            bool isodd = false;
+            if (Width % 2 == 0)
+            {
+                isodd = false;
+            }
+            else
+            {
+                isodd = true;
+            }
+            return isodd;
+        }
+        public bool placecontainer(Container container, int i)
+        {
+            bool added = false;
+
+            //check if valuable container is still reachable
+            if (checknexttovaluable(container, i) == false)
+            {
+                if (coolablecheck(container, i) == true)
+                {
+                    //check if containerfield can have all the containers while not exceeding more than 130 ton on top of the first one
+                    List<Container> dummycontainerlist = Containerfields[i];
+                    dummycontainerlist.Add(container);
+                    dummycontainerlist = weightsort(dummycontainerlist);
+                    if (canaddweightontop(dummycontainerlist) == true)
+                    {
+                        Containerfields[i] = dummycontainerlist;
+                        added = true;
+                    }
+                }
+            }
+            return added;
+        }
+
         public bool exceedleft(int containerweight)
         {
-            int totalweight = LeftWeight+ RightWeight;
+            int totalweight = LeftWeight + RightWeight + MiddleWeight;
             int newleftweight = LeftWeight + containerweight;
-            int newpercentageleft = newleftweight / totalweight * 100;
-            int percentageright = RightWeight / totalweight * 100;
-
-            if(newpercentageleft > percentageright + 20) 
+            int newpercentageleft = 0;
+            try
+            {
+                newpercentageleft = newleftweight / totalweight * 100;
+            }
+            catch (DivideByZeroException)
             {
                 return false;
             }
-            else return true;
+            int percentageright = RightWeight / totalweight * 100;
+
+            if (newpercentageleft !> percentageright + 20)
+            {
+                return true;
+            }
+            else return false;
         }
 
         public bool exceedright(int containerweight)
         {
-            int totalweight = LeftWeight + RightWeight;
+            int totalweight = LeftWeight + RightWeight + MiddleWeight;
             int newrightweight = RightWeight + containerweight;
-            int newpercentageright = newrightweight / totalweight * 100;
+            int newpercentageright = 0;
+
+            try
+            {
+                newpercentageright = newrightweight / totalweight * 100;
+            }
+            catch (DivideByZeroException)
+            {
+                return false;
+            }
             int percentageleft = LeftWeight / totalweight * 100;
 
             if (newpercentageright > percentageleft + 20)
             {
-                return false;
+                return true;
             }
-            else return true;
+            else return false;
         }
 
         public List<Container> weightsort(List<Container> containerlist)
         {
-            List<Container> sortedlist = containerlist.OrderBy(o => o.Weight).ToList();
-            foreach(Container container in sortedlist)
+            List<Container> sortedlist = containerlist.OrderByDescending(o => o.Weight).ToList();
+            foreach (Container container in sortedlist)
             {
-                if(container.Valuable == true)
+                if (container.Valuable == true)
                 {
                     containerlist.Remove(container);
                     containerlist.Add(container);
@@ -168,31 +249,18 @@ namespace containership
         }
 
 
-        public bool canaddweightontop(List<Container>fieldlist)
+        public bool canaddweightontop(List<Container> fieldlist)
         {
             int weightontop = 0;
-            for(int i = 0; i < fieldlist.Count; i++)
+            for (int i = 0; i < fieldlist.Count; i++)
             {
-                if(i != 0)
+                if (i != 0)
                 {
                     weightontop = weightontop + fieldlist[i].Weight;
                 }
             }
 
             //check if list has more than one valluable container
-            int valueableammount = 0;
-            for(int i =0; i < fieldlist.Count; i++)
-            {
-                if (fieldlist[i].Valuable == true)
-                {
-                    valueableammount++;
-                }
-                if(valueableammount > 1)
-                {
-                    return false;
-                }
-            }
-            
 
             if (weightontop > 120)
             {
@@ -209,7 +277,7 @@ namespace containership
             {
                 try
                 {
-                    if (Containerfields[i + Width][Containerfields[i].Count].Valuable == true)
+                    if (Containerfields[i + Convert.ToInt32(Width)][Containerfields[i].Count].Valuable == true)
                     {
                         nextto = true;
                     }
@@ -217,7 +285,7 @@ namespace containership
                 catch { }
                 try
                 {
-                    if (Containerfields[i - Width][Containerfields[i].Count].Valuable == true)
+                    if (Containerfields[i - Convert.ToInt32(Width)][Containerfields[i].Count].Valuable == true)
                     {
                         nextto = true;
                     }
@@ -228,7 +296,7 @@ namespace containership
             {
                 try
                 {
-                    if (Containerfields[i + Width][Containerfields[i].Count] == null)
+                    if (Containerfields[i + Convert.ToInt32(Width)][Containerfields[i].Count] == null)
                     {
                         nextto = true;
                     }
@@ -236,7 +304,7 @@ namespace containership
                 catch { }
                 try
                 {
-                    if (Containerfields[i - Width][Containerfields[i].Count] == null)
+                    if (Containerfields[i - Convert.ToInt32(Width)][Containerfields[i].Count] == null)
                     {
                         nextto = true;
                     }
@@ -249,7 +317,7 @@ namespace containership
 
         public bool coolablecheck(Container container, int i)
         {
-            if (container.Coolable == true && i > Width)
+            if (container.Coolable == true && i > Convert.ToInt32(Width))
             {
                 return false;
             }
