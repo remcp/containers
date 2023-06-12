@@ -9,15 +9,15 @@ namespace containership
 {
     internal class Container
     {
-        public int Weight { get; set; }
-        public bool Valuable { get; set; }
-        public bool Coolable { get; set; }
+        public int Weight { get;  set; }
+        public bool Valuable { get; private set; }
+        public bool Coolable { get; private set; }
 
         public Container(int weight, bool valuable, bool coolable)
         {
-            if (MinWeight(weight) == false)
+            if (checkweight(weight) == true)
             {
-                throw new ArgumentException("container needs to be at least 4000kg");
+                throw new ArgumentException("container needs to be at least 4000kg and max 30000kg");
             }
             else
             {
@@ -27,9 +27,9 @@ namespace containership
             }
         }
 
-        public bool MinWeight(int weight)
+        public bool checkweight(int weight)
         {
-            if (weight < 4000)
+            if (weight < 4000 | weight > 30000)
             {
                 return false;
             }
