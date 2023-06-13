@@ -1,4 +1,6 @@
-﻿namespace containership
+﻿using System.ComponentModel;
+
+namespace containership
 {
     class Program
     {
@@ -8,7 +10,9 @@
             bool intcheck = false;
             List<Ship> shiplist = new List<Ship>();
             List<Container> containerlist = new List<Container>();
+            List<Container> newcontainerlist = new List<Container>();
             Ship setship = new Ship(0, 0);
+            bool checkcontainersplit = false;
 
             while (intcheck == false)
             {
@@ -22,12 +26,21 @@
                     int width = Convert.ToInt32(Console.ReadLine());
                     setship = new Ship(length, width);
                     shiplist.Add(setship);
+                    if(length < 3 | width < 3)
+                    {
+                        throw new Exception();
+                    }
                     intcheck = true;
+                    Console.WriteLine();
+                    Console.WriteLine();
+                    Console.WriteLine();
                 }
                 catch
                 {
                     Console.Clear();
-                    Console.WriteLine("vul een getal in");
+                    Console.WriteLine("vul een getal in, een boot is minimaal 3 bij 3");
+
+                    Console.WriteLine();
                 }
             }
 
@@ -53,14 +66,37 @@
                 intcheck = true;
             }
 
-            containerlist = containerlist.OrderByDescending(a => a.Coolable).ThenBy(a => a.Valuable).ToList();
-            foreach (Container container in containerlist)
+            
+            while (containerlist.Count > 0)
             {
-                foreach (Ship ship in shiplist)
+                containerlist = containerlist.OrderByDescending(a => a.Coolable).ThenBy(a => a.Weight).ThenBy(a => a.Valuable).ToList();
+                for (int i = 0; i < containerlist.Count; i++)
                 {
-                    if (ship.addcontainer(container) == true)
+                    foreach (Ship ship in shiplist)
                     {
-                        break;
+                        try
+                        {
+                            if (ship.addcontainer(containerlist[0]) == true)
+                            {
+                                containerlist.Remove(containerlist[0]);
+                                break;
+                            }
+                        }
+                        catch(ArgumentException)
+                        {
+                            try
+                            {
+                                if (ship.addtwocontainers(containerlist[0], containerlist[1]))
+                                {
+                                    containerlist.Remove(containerlist[0]);
+                                    containerlist.Remove(containerlist[1]);
+                                    break;
+                                }
+                            }
+                            catch { }
+                        }
+
+
                     }
                 }
             }

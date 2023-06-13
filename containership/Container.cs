@@ -38,5 +38,16 @@ namespace containership
                 return true;
             }
         }
+
+        public override string ToString()
+        {
+            string coolable = "no";
+            if (Coolable)
+            {
+                coolable = "yes";
+            }
+
+            return coolable;
+        }
     }
 }
