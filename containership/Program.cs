@@ -58,7 +58,7 @@ namespace containership
                 //    Container container = new Container(30000, true, false);
                 //    containerlist.Add(container);
                 //}
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 15; i++)
                 {
                     Container container = new Container(30000, false, true);
                     containerlist.Add(container);
@@ -66,9 +66,15 @@ namespace containership
                 intcheck = true;
             }
 
-            
+            int waittime = containerlist.Count * 10;
+            int checkwaittime = 0;
             while (containerlist.Count > 0)
             {
+                checkwaittime++;
+                if (checkwaittime > waittime)
+                {
+                    break;
+                }
                 containerlist = containerlist.OrderByDescending(a => a.Coolable).ThenBy(a => a.Weight).ThenBy(a => a.Valuable).ToList();
                 for (int i = 0; i < containerlist.Count; i++)
                 {
