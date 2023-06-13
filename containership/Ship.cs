@@ -234,7 +234,7 @@ namespace containership
 
         public List<Container> weightsort(List<Container> containerlist)
         {
-            List<Container> sortedlist = containerlist.OrderByDescending(o => o.Valuable).ThenBy(a => a.Weight).ToList();
+            List<Container> sortedlist = containerlist.OrderByDescending(o => o.Valuable).ThenByDescending(a => a.Weight).ToList();
 
             return sortedlist;
         }

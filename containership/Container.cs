@@ -47,7 +47,7 @@ namespace containership
                 coolable = "yes";
             }
 
-            return coolable;
+            return Weight.ToString();
         }
     }
 }

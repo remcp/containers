@@ -53,6 +53,16 @@ namespace containership
                     Container container = new Container(30000, false, false);
                     containerlist.Add(container);
                 }
+                for (int i = 0; i < 10; i++)
+                {
+                    Container container = new Container(10000, false, false);
+                    containerlist.Add(container);
+                }
+                for (int i = 0; i < 1; i++)
+                {
+                    Container container = new Container(20000, false, false);
+                    containerlist.Add(container);
+                }
                 //for (int i = 0; i < 10; i++)
                 //{
                 //    Container container = new Container(30000, true, false);
@@ -75,7 +85,7 @@ namespace containership
                 {
                     break;
                 }
-                containerlist = containerlist.OrderByDescending(a => a.Coolable).ThenBy(a => a.Weight).ThenBy(a => a.Valuable).ToList();
+                containerlist = containerlist.OrderByDescending(a => a.Coolable).ThenByDescending(a => a.Weight).ThenBy(a => a.Valuable).ToList();
                 for (int i = 0; i < containerlist.Count; i++)
                 {
                     foreach (Ship ship in shiplist)
