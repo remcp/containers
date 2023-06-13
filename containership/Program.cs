@@ -48,7 +48,7 @@ namespace containership
 
             while (intcheck == false)
             {
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 35; i++)
                 {
                     Container container = new Container(30000, false, false);
                     containerlist.Add(container);
@@ -108,7 +108,22 @@ namespace containership
                 Console.WriteLine();
                 Console.WriteLine();
             }
-
+            Console.WriteLine("overgebleven containers");
+            Console.WriteLine();
+            foreach (Container container in containerlist)
+            {
+                string iscoolable = "no";
+                string isvaluable = "no";
+                if (container.Coolable == true)
+                {
+                    iscoolable = "yes";
+                }
+                if (container.Valuable == true)
+                {
+                    isvaluable = "yes";
+                }
+                Console.WriteLine(container.Weight + " " + " coolable = " + iscoolable + " valuable = " + isvaluable);
+            }
         }
 
         //public bool addcontainer()

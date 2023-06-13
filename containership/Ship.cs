@@ -100,7 +100,7 @@ namespace containership
             for (int i = 0; i < Containerfields.Count; i++)
             {
                 //check if container does not exceed ship maximum weight
-                if (LeftWeight + RightWeight + MiddleWeight + container.Weight < MaxWeight)
+                if (LeftWeight + RightWeight + MiddleWeight + container.Weight <= MaxWeight)
                 {
                     if (checkodd() == true && i % Width == middle)
                     {
