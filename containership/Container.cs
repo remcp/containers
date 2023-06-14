@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace containership
 {
-    internal class Container
+    public class Container
     {
         public int Weight { get;  set; }
         public bool Valuable { get; private set; }

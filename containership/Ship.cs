@@ -10,7 +10,7 @@ using System.Xml.Linq;
 
 namespace containership
 {
-    internal class Ship
+    public class Ship
     {
         public List<List<Container>> Containerfields = new List<List<Container>>();
 
@@ -169,7 +169,7 @@ namespace containership
             bool added = false;
 
             //check if valuable container is still reachable
-            if (checknexttovaluable(container, i) == false)
+            if (checknexttovaluable(container, i, Containerfields[i].Count) == false)
             {
                 if (coolablecheck(container, i) == true)
                 {
@@ -258,7 +258,7 @@ namespace containership
             else return true;
         }
 
-        public bool checknexttovaluable(Container container, int i)
+        public bool checknexttovaluable(Container container, int i, int height)
         {
             bool nextto = false;
 
@@ -266,7 +266,7 @@ namespace containership
             {
                 try
                 {
-                    if (Containerfields[i + Width][Containerfields[i].Count].Valuable == true)
+                    if (Containerfields[i + Width][Containerfields[height].Count].Valuable == true)
                     {
                         nextto = true;
                     }
@@ -274,7 +274,7 @@ namespace containership
                 catch { }
                 try
                 {
-                    if (Containerfields[i - Width][Containerfields[i - Width].Count].Valuable == true)
+                    if (Containerfields[i - Width][Containerfields[height].Count].Valuable == true)
                     {
                         nextto = true;
                     }
@@ -285,7 +285,7 @@ namespace containership
             {
                 try
                 {
-                    if (Containerfields[i + Width][Containerfields[i].Count] == null)
+                    if (Containerfields[i + Width][Containerfields[height].Count] == null)
                     {
                         nextto = true;
                     }
@@ -293,7 +293,7 @@ namespace containership
                 catch { }
                 try
                 {
-                    if (Containerfields[i - Width][Containerfields[i].Count] == null)
+                    if (Containerfields[i - Width][Containerfields[height].Count] == null)
                     {
                         nextto = true;
                     }

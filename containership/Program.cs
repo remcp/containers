@@ -48,12 +48,12 @@ namespace containership
 
             while (intcheck == false)
             {
-                for (int i = 0; i < 35; i++)
+                for (int i = 0; i < 20; i++)
                 {
                     Container container = new Container(30000, false, false);
                     containerlist.Add(container);
                 }
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     Container container = new Container(10000, false, false);
                     containerlist.Add(container);
