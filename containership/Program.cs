@@ -120,7 +120,6 @@ namespace containership
                             }
                             catch { }
                         }
-
                         shipcount++;
                     }
                 }
