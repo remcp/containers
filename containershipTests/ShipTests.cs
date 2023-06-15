@@ -328,5 +328,73 @@ namespace containership.Tests
             //assert
             Assert.AreEqual(assert, false);
         }
+        [TestMethod()]
+        public void nexttovalueablecheckyes()
+        {
+            //arrange
+            List<Ship> shiplist = new List<Ship>();
+            List<Container> containerlist = new List<Container>();
+            List<Container> newcontainerlist = new List<Container>();
+            Ship setship = new Ship(4, 4);
+            shiplist.Add(setship);
+            bool assert = true;
+
+            for (int i = 0; i < 1; i++)
+            {
+                Container container = new Container(30000, true, false);
+                containerlist.Add(container);
+            }
+            shiplist[0].Containerfields[0].Add(containerlist[0]);
+            shiplist[0].Containerfields[1].Add(containerlist[0]);
+            shiplist[0].Containerfields[2].Add(containerlist[0]);
+            shiplist[0].Containerfields[3].Add(containerlist[0]);
+            //act
+            for (int i = 0; i < 8; i++)
+            {
+                assert = shiplist[0].checknexttovaluable(containerlist[0], i, 1);
+                if (assert == false)
+                {
+                    break;
+                }
+            }
+            
+
+            //assert
+            Assert.AreEqual(assert, true);
+        }
+        [TestMethod()]
+        public void nexttovalueablecheckno()
+        {
+            //arrange
+            List<Ship> shiplist = new List<Ship>();
+            List<Container> containerlist = new List<Container>();
+            List<Container> newcontainerlist = new List<Container>();
+            Ship setship = new Ship(4, 4);
+            shiplist.Add(setship);
+            bool assert = true;
+
+            for (int i = 0; i < 1; i++)
+            {
+                Container container = new Container(30000, true, false);
+                containerlist.Add(container);
+            }
+            shiplist[0].Containerfields[0].Add(containerlist[0]);
+            shiplist[0].Containerfields[1].Add(containerlist[0]);
+            shiplist[0].Containerfields[2].Add(containerlist[0]);
+            shiplist[0].Containerfields[3].Add(containerlist[0]);
+            //act
+            for (int i = 0; i < 9; i++)
+            {
+                assert = shiplist[0].checknexttovaluable(containerlist[0], i, 1);
+                if (assert == false)
+                {
+                    break;
+                }
+            }
+
+
+            //assert
+            Assert.AreEqual(assert, false);
+        }
     }
 }
