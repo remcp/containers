@@ -380,7 +380,7 @@ namespace containership
                 {
                     for (int i = 0; i < Containerfields.Count; i++)
                     {
-                        //container can only be placed on the left side of the ship or in the middle row
+                        //container can only be placed on the left side of the ship
                         if (addedleft == false)
                         {
                             if (i % Width < middle | checkodd() == false & i % Width <= middle)

@@ -42,12 +42,17 @@ namespace containership
         public override string ToString()
         {
             string coolable = "no";
+            string valuable = "no";
             if (Coolable)
             {
                 coolable = "yes";
             }
+            if (Valuable)
+            {
+                valuable = "yes";
+            }
 
-            return Weight.ToString();
+            return Weight.ToString() + coolable + valuable;
         }
     }
 }
