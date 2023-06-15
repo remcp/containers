@@ -7,12 +7,13 @@ namespace containership
         public static void Main(string[] args)
         {
             Program program = new Program();
+            int width = 0;
             bool intcheck = false;
             List<Ship> shiplist = new List<Ship>();
             List<Container> containerlist = new List<Container>();
             List<Container> newcontainerlist = new List<Container>();
+            List<Container> couldnotaddlist = new List<Container>();
             Ship setship = new Ship(0, 0);
-            bool checkcontainersplit = false;
 
             while (intcheck == false)
             {
@@ -23,7 +24,7 @@ namespace containership
                     int length = Convert.ToInt32(Console.ReadLine());
 
                     Console.WriteLine("boat width:");
-                    int width = Convert.ToInt32(Console.ReadLine());
+                    width = Convert.ToInt32(Console.ReadLine());
                     setship = new Ship(length, width);
                     shiplist.Add(setship);
                     if(length < 3 | width < 3)
@@ -48,12 +49,12 @@ namespace containership
 
             while (intcheck == false)
             {
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < 24; i++)
                 {
                     Container container = new Container(30000, false, false);
                     containerlist.Add(container);
                 }
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 6; i++)
                 {
                     Container container = new Container(10000, false, false);
                     containerlist.Add(container);
@@ -68,7 +69,7 @@ namespace containership
                 //    Container container = new Container(30000, true, false);
                 //    containerlist.Add(container);
                 //}
-                for (int i = 0; i < 15; i++)
+                for (int i = 0; i < 16; i++)
                 {
                     Container container = new Container(30000, false, true);
                     containerlist.Add(container);
@@ -76,33 +77,41 @@ namespace containership
                 intcheck = true;
             }
 
-            int waittime = containerlist.Count * 10;
+            int waittime = width + 2;
             int checkwaittime = 0;
             while (containerlist.Count > 0)
             {
+                int shipcount = 0;
                 checkwaittime++;
                 if (checkwaittime > waittime)
                 {
                     break;
                 }
                 containerlist = containerlist.OrderByDescending(a => a.Coolable).ThenByDescending(a => a.Weight).ThenBy(a => a.Valuable).ToList();
-                for (int i = 0; i < containerlist.Count; i++)
+                for (int i = 0; i < containerlist.Count + 1; i++)
                 {
-                    foreach (Ship ship in shiplist)
+                    for (int j = 0; j < shiplist.Count + 1; j++)
                     {
+                       
                         try
                         {
-                            if (ship.addcontainer(containerlist[0]) == true)
+                            if (shiplist[j].addcontainer(containerlist[0]) == true)
                             {
                                 containerlist.Remove(containerlist[0]);
                                 break;
+                            }
+                            else if(shipcount > shiplist.Count)
+                            {
+                                couldnotaddlist.Add(containerlist[0]);
+                                containerlist.Remove(containerlist[0]);
+
                             }
                         }
                         catch(ArgumentException)
                         {
                             try
                             {
-                                if (ship.addtwocontainers(containerlist[0], containerlist[1]))
+                                if (shiplist[j].addtwocontainers(containerlist[0], containerlist[1]))
                                 {
                                     containerlist.Remove(containerlist[0]);
                                     containerlist.Remove(containerlist[1]);
@@ -112,7 +121,7 @@ namespace containership
                             catch { }
                         }
 
-
+                        shipcount++;
                     }
                 }
             }
@@ -126,6 +135,11 @@ namespace containership
             }
             Console.WriteLine("overgebleven containers");
             Console.WriteLine();
+
+            foreach(Container container in couldnotaddlist)
+            {
+                containerlist.Add(container);
+            }
             foreach (Container container in containerlist)
             {
                 string iscoolable = "no";

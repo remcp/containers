@@ -311,7 +311,6 @@ namespace containership
                 return false;
             }
             else return true;
-
         }
 
         public bool addtwocontainers(Container container1, Container container2)
