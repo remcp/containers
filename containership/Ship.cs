@@ -266,7 +266,7 @@ namespace containership
             {
                 try
                 {
-                    if (Containerfields[i + Width][Containerfields[height].Count].Valuable == true)
+                    if (Containerfields[i + Width][height - 1].Valuable == true)
                     {
                         nextto = true;
                     }
@@ -274,7 +274,7 @@ namespace containership
                 catch { }
                 try
                 {
-                    if (Containerfields[i - Width][Containerfields[height].Count].Valuable == true)
+                    if (Containerfields[i - Width][height - 1].Valuable == true)
                     {
                         nextto = true;
                     }
@@ -285,22 +285,35 @@ namespace containership
             {
                 try
                 {
-                    if (Containerfields[i + Width][Containerfields[height].Count] == null)
+                    if (!(Containerfields[i + Width].Count == 0))
                     {
-                        nextto = true;
+                        if (Containerfields[i + Width].Count >= height)
+                        {
+                            nextto = true;
+                        }
                     }
                 }
                 catch { }
                 try
                 {
-                    if (Containerfields[i - Width][Containerfields[height].Count] == null)
+                    if (!(Containerfields[i - Width].Count == 0))
                     {
-                        nextto = true;
+                        if (Containerfields[i - Width].Count >= height)
+                        {
+                            nextto = true;
+                        }
                     }
                 }
                 catch { }
             }
-
+            try
+            {
+                if (Containerfields[i][Containerfields[i].Count - 1].Valuable == true)
+                {
+                    nextto = true;
+                }
+            }
+            catch { }
             return nextto;
         }
 

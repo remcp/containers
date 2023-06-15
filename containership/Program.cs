@@ -9,10 +9,12 @@ namespace containership
             Program program = new Program();
             int width = 0;
             bool intcheck = false;
+            
             List<Ship> shiplist = new List<Ship>();
             List<Container> containerlist = new List<Container>();
             List<Container> newcontainerlist = new List<Container>();
             List<Container> couldnotaddlist = new List<Container>();
+            List<Container> valuablecontainerlist = new List<Container>();
             Ship setship = new Ship(0, 0);
 
             while (intcheck == false)
@@ -49,7 +51,7 @@ namespace containership
 
             while (intcheck == false)
             {
-                for (int i = 0; i < 24; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     Container container = new Container(30000, false, false);
                     containerlist.Add(container);
@@ -64,11 +66,11 @@ namespace containership
                     Container container = new Container(20000, false, false);
                     containerlist.Add(container);
                 }
-                //for (int i = 0; i < 10; i++)
-                //{
-                //    Container container = new Container(30000, true, false);
-                //    containerlist.Add(container);
-                //}
+                for (int i = 0; i < 10; i++)
+                {
+                    Container container = new Container(30000, true, false);
+                    containerlist.Add(container);
+                }
                 for (int i = 0; i < 16; i++)
                 {
                     Container container = new Container(30000, false, true);
@@ -77,17 +79,19 @@ namespace containership
                 intcheck = true;
             }
 
-            int waittime = width + 2;
+            int waittime = 5;
             int checkwaittime = 0;
             while (containerlist.Count > 0)
             {
+                containerlist = containerlist.OrderByDescending(a => a.Coolable).ThenByDescending(a => a.Weight).ThenBy(a => a.Valuable).ToList();
+
                 int shipcount = 0;
                 checkwaittime++;
                 if (checkwaittime > waittime)
                 {
                     break;
                 }
-                containerlist = containerlist.OrderByDescending(a => a.Coolable).ThenByDescending(a => a.Weight).ThenBy(a => a.Valuable).ToList();
+                
                 for (int i = 0; i < containerlist.Count + 1; i++)
                 {
                     for (int j = 0; j < shiplist.Count + 1; j++)
@@ -102,6 +106,7 @@ namespace containership
                             }
                             else if(shipcount > shiplist.Count)
                             {
+
                                 couldnotaddlist.Add(containerlist[0]);
                                 containerlist.Remove(containerlist[0]);
 
